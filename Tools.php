@@ -10,20 +10,20 @@ namespace chaensel;
  * This class is used for building some websites.
  * It does several things - just read the code
  *
- * @author Christian Haensel <chris@chaensel.de>
- * @link https:/chaensel.de
+ * @author  Christian Haensel <chris@chaensel.de>
+ * @link    https:/chaensel.de
  *
  */
 
 
 class Tools {
 
-	public static function displayErrors($displayErrors = true) {
-		if($displayErrors) {
-			ini_set('display_errors', 1);
-			error_reporting(E_ALL);
+	public static function displayErrors( $displayErrors = true ) {
+		if ( $displayErrors ) {
+			ini_set( 'display_errors', 1 );
+			error_reporting( E_ALL );
 		} else {
-			ini_set('display_errors', 0);
+			ini_set( 'display_errors', 0 );
 		}
 	}
 
@@ -158,20 +158,55 @@ class Tools {
 	/**
 	 * Map an IP to a country using the free service of https://api.ip2country.info
 	 * Uses the user's IP if no IP parameter given
+	 *
 	 * @param null $ip
 	 *
 	 * @return bool
 	 */
 	public static function ip2geo( $ip = null ) {
-		return self::getData( "https://api.ip2country.info/ip?" . ($ip ?? $ip ?? $_SERVER['REMOTE_ADDR']) );
+		return self::getData( "https://api.ip2country.info/ip?" . ( $ip ?? $ip ?? $_SERVER['REMOTE_ADDR'] ) );
 	}
 
 	/**
 	 * Returns a random Chuck Norris joke from https://api.chucknorris.io
-	 * @return object
+	 *
+	 * @return object | bool
 	 */
 	public static function chuck() {
-		return self::getData("https://api.chucknorris.io/jokes/random");
+		return self::getData( "https://api.chucknorris.io/jokes/random" );
+	}
+
+	/**
+	 * Generate a random human-readable passwort
+	 *
+	 * @param int  $length       The length of the password to be returned
+	 * @param bool $appendNumber Should a double-digit number be appended to the password?
+	 *
+	 * @return string
+	 */
+	public static function generateRandomPassword( $length = 16, $appendNumber = true ) {
+		if ( ( $length % 2 ) !== 0 ) { // Length paramenter must be a multiple of 2
+			$length = $length + 1;
+		}
+
+		if ( $appendNumber ) {
+			$length = $length - 2;
+		}; // Makes room for the two-digit number on the end
+		$conso    = array( 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z' );
+		$vocal    = array( 'a', 'e', 'i', 'o', 'u' );
+		$password = '';
+		srand( (double) microtime() * 1000000 );
+		$max = $length / 2;
+		for ( $i = 1; $i <= $max; $i ++ ) {
+			$password .= $conso[ rand( 0, 19 ) ];
+			$password .= $vocal[ rand( 0, 4 ) ];
+		}
+		if ( $appendNumber ) {
+			$password .= rand( 10, 99 );
+		}
+		$newpass = $password;
+
+		return $newpass;
 	}
 
 }
